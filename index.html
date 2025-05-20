@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To Do List</title>
+  <style>
+     /* 기본 스타일 */
+    
+ body {
+  font-family: 'Arial', sans-serif;
+  background-color: #F9F7F7;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.main-header {
+  background-color: #3F72AF;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.clear-btn {
+  background-color: #FF6F61;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.main-content {
+  width: 100%;
+  max-width: 800px;
+  margin: 16px auto;
+  background-color: white;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background-color: #DBE2EF;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.intro {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+#calendar {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+
+    .main-header .logo h1 {
+      color: #F9F7F7; /* 로고 색상 */
+      margin: 0;
+    }
+
+    /* 네비게이션 링크 스타일 */
+    .nav-links {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-btn {
+      background-color: #112D4E; /* 기본 버튼 색상 */
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      text-align: center;
+      display: inline-block;
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: #3F72AF; /* hover 시 버튼 색상 변경 */
+      transform: scale(1.05); /* hover 시 버튼 크기 증가 */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* hover 시 그림자 효과 */
+    }
+
+    .nav-btn:active {
+      transform: scale(1); /* 클릭 시 원래 크기 */
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* 클릭 시 그림자 효과 */
+    }
+
+    .nav-links a {
+      color: white; /* 링크 텍스트 색상 */
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* 네비게이션 항목 간 간격 */
+    .nav-links li {
+      list-style: none;
+    }
+
+    /* 로컬스토리지 초기화 버튼 스타일 */
+    .clear-btn {
+      background-color: #FF6F61; /* 버튼 색상 */
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 200px; /* 버튼 크기 조정 */
+      display: block;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .clear-btn:hover {
+      background-color: #F25C54; /* hover 시 색상 변경 */
+      transform: scale(1.05); /* hover 시 크기 살짝 커짐 */
+    }
+
+    .clear-btn:active {
+      transform: scale(1); /* 클릭 시 원래 크기 유지 */
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .intro h2 {
+      color: #112D4E; /* 제목 색상 */
+    }
+
+    .dashboard-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background-color: #DBE2EF; /* 카드 배경색 */
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .card h3 {
+      color: #3F72AF; /* 카드 제목 색상 */
+    }
+
+    .card a {
+      color: #3F72AF; /* 카드 링크 색상 */
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .card a:hover {
+      color: #112D4E; /* 카드 링크 hover 색상 */
+    }
+
+    /* 모달 */
+    
+
+    .modal {
+    display: none; /* 기본 숨김 */
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    }
+    /* 모든 모달 내부 콘텐츠 */
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    /* 섹션 보이기/숨기기 */
+    .hidden-section {
+        display: none;
+    }
+    .visible-section {
+        display: block;
+    }
+    /* 부드러운 팝업 애니메이션 */
+    @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+    }
+
+    /* 모달 내 텍스트 */
+    .modal-content p {
+    font-size: 16px;
+    margin-bottom: 24px;
+    color: #333;
+    }
+
+    /* 삭제 버튼 */
+    #delete-confirm-btn {
+    background-color: #FF6F61;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    #delete-confirm-btn:hover {
+    background-color: #F25C54;
+    transform: scale(1.05);
+    }
+
+    #delete-confirm-btn:active {
+    transform: scale(1);
+    }
+
+    /* 취소 버튼 */
+    #delete-cancel-btn {
+    background-color: #AAAAAA;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    #delete-cancel-btn:hover {
+    background-color: #888888;
+    transform: scale(1.05);
+    }
+
+    #delete-cancel-btn:active {
+    transform: scale(1);
+    }
+    .close-btn {
+      float: right;
+      font-size: 28px;
+      cursor: pointer;
+      color: #aaa;
+    }
+
+    .close-btn:hover {
+      color: black;
+    }
+
+    /* 입력 필드 스타일 */
+    form input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      box-sizing: border-box; /* 이것도 꼭 필요 */
+    }
+
+    form button {
+      background-color: #112D4E; /* 버튼 색상 */
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #3F72AF; /* 버튼 hover 색상 */
+    }
+
+    /* 체크박스 */
+    .important-item {
+      display: flex;
+      width: 100%;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .important-item label {
+      width: 100%;
+      margin-bottom: 3px;
+    }
+
+    .important-item input {
+      width: 13px;
+    }
+
+    label[for="important-checkbox"] {
+      font-size: 16px;
+      color: #3F72AF;
+    }
+
+    /* 캘린더 */
+    #calendar {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .modal-content, 
+    .modal-content * {
+      box-sizing: border-box;
+    }
+
+    /* 로컬스토리지 초기화 버튼 스타일 */
+    .clear-btn {
+      background-color: #FF6F61; /* 눈에 띄는 색상 */
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 200px; /* 버튼 크기 조정 */
+      display: block;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .clear-btn:hover {
+      background-color: #F25C54; /* hover 시 색상 변경 */
+      transform: scale(1.05); /* hover 시 크기 살짝 커짐 */
+    }
+
+    .clear-btn:active {
+      transform: scale(1); /* 클릭 시 원래 크기 유지 */
+    }
+
+    /* 버튼을 페이지 하단에 배치 */
+    .footer-btn-container {
+      text-align: center;
+      margin-top: 40px;
+    }
+    #add-event-btn {
+    background-color: #3F72AF;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 999px; /* pill 형태 */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-block;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #add-event-btn:hover {
+    background-color: #284b84;
+    transform: scale(1.05);
+    }
+
+    #add-event-btn:active {
+    transform: scale(0.98);
+    }
+
+    #date-events-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 20px;
+    }
+
+    #date-events-list li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+    }
+    #important-list li {
+        border-radius: 8px;
+        background-color: #F1F5F9;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between; /* 핵심! */
+        align-items: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        transition: background-color 0.3s ease;
+        padding: 10px; /* 추가로 패딩을 주면 버튼이 더 자연스럽게 정렬됨 */
+    }
+
+    #important-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    #all-todo-list li {
+        border-radius: 8px;
+        background-color: #F1F5F9; /* 부드러운 회색 배경 */
+        margin-bottom: 10px; /* 🔥 항목 사이 간격 */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        transition: background-color 0.3s ease;
+    }
+    #all-todo-list {
+    list-style: none;
+    padding-left: 0;
+    }
+    .all-delete-btn {
+    background-color: #FF6F61;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 6px 16px;
+    border: none;
+    border-radius: 999px; /* pill-shaped */
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .all-delete-btn:hover {
+    background-color: #F25C54;
+    transform: scale(1.05);
+    }
+
+    .all-delete-btn:active {
+    transform: scale(1);
+    }
+    .hidden-section {
+    visibility: hidden;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    }
+
+    .visible-section {
+    visibility: visible;
+    height: auto;
+    opacity: 1;
+    position: relative;
+    }
+
+    .modal-content {
+        background-color: #ffffff;
+        border-radius: 20px;
+        padding: 32px 28px;
+        width: 90%;
+        max-width: 420px;
+        text-align: center;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        position: relative;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+.modal-content h2 {
+  font-size: 22px;
+  color: #112D4E;
+  margin-bottom: 24px;
+}
+
+.modal-content p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.modal-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  max-height: 200px;
+  overflow-y: auto;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.modal-content ul li {
+  padding: 12px 0;
+  font-size: 15px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-content ul li:hover {
+  background-color: #f0f0f0;
+}
+
+.modal-content button {
+  background-color: #3F72AF;
+  color: #fff;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content button:hover {
+  background-color: #284b84;
+  transform: scale(1.05);
+}
+
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 24px;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+
+
+
+    /* ===== 반응형: 모바일 화면 대응 (360px 이하) ===== */
+@media (max-width: 1100px) {
+    .main-header h1 {
+        display: none;
+    }
+
+  .main-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-links {
+    position: static;
+    transform: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .nav-btn {
+    /* flex: 1 1 30%;              ✅ 유동적인 크기: 최소 30% 정도 너비 */
+    max-width: 120px;           /* 최대 크기 제한 */
+    min-width: 80px;            /* 최소 크기 제한 */
+    text-align: center;
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .clear-btn {
+    width: 90%;
+    max-width: 300px;
+    font-size: 14px;
+    padding: 10px;
+  }
+  .main-content {
+    margin: 20px 10px;
+    padding: 16px;
+  }
+
+  .dashboard-summary {
+    grid-template-columns: 1fr; /* 카드 한 줄씩 세로로 배치 */
+  }
+
+  .modal-content {
+    width: 90%;
+    padding: 20px;
+  }
+
+  form button {
+    font-size: 14px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .card h3 {
+    font-size: 18px;
+  }
+
+  .card p {
+    font-size: 14px;
+  }
+
+  #calendar {
+    padding: 10px;
+  }
+}
+    
+
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+</head>
+<body>
+  <header class="main-header">
+    <a href="#" class="logo"><h1>🏠</h1></a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#" onclick="toggleAllTodos()" class="nav-btn">📋 전체 할 일</a></li>
+        <li><a href="#" onclick="toggleCalendar()" class="nav-btn">📅 캘린더</a></li>
+        <li><a href="#" onclick="toggleImportantTodos()" class="nav-btn">⭐ 중요한 일</a></li>
+      </ul>
+    </nav>
+    <button onclick="clearLocalStorage()" class="clear-btn">일정 전체 삭제하기</button>
+  </header>
+
+  <main class="content-wrapper">
+    <section id="calendar-section" class="main-content hidden-section">
+      <div id="calendar"></div>
+    </section>
+
+    <section id="important-section" class="main-content hidden-section">
+      <h3>⭐ 중요한 일 목록</h3>
+      <ul id="important-list"></ul>
+    </section>
+
+    <section id="all-todo-section" class="main-content hidden-section">
+      <h3>📋 전체 할 일 목록</h3>
+      <ul id="all-todo-list"></ul>
+    </section>
+  </main>
+
+  <!-- 모달 -->
+  <div id="event-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2>일정 추가</h2>
+      <form id="event-form">
+        <label for="event-title">일정 제목:</label>
+        <input type="text" id="event-title" name="title" required />
+        
+        <label for="event-date">날짜:</label>
+        <input type="date" id="event-date" name="date" required />
+        
+        <div class="important-item">
+          <input type="checkbox" id="important-checkbox" name="important" />
+          <label for="important-checkbox">중요한 일 ⭐</label>
+        </div>
+
+        <button type="submit">일정 추가</button>
+      </form>
+    </div>
+  </div>
+  <!-- 삭제 확인 모달 -->
+<div id="delete-confirmation" class="modal">
+  <div class="modal-content">
+    <p>이 일정을 정말 삭제하시겠습니까?</p>
+    <button id="delete-confirm-btn">삭제</button>
+    <button id="delete-cancel-btn">취소</button>
+  </div>
+</div>
+<!-- 날짜 클릭 시 일정 목록 모달 -->
+<div id="date-events-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeDateEventsModal()">&times;</span>
+    <h2 id="modal-date-title">선택한 날짜의 일정</h2>
+    <ul id="date-events-list"></ul>
+    <button id="add-event-btn" style="margin-top: 20px;">➕ 일정 추가</button>
+  </div>
+</div>
+
+  <main class="main-content">
+    <section class="intro">
+      <h2>오늘의 대시보드</h2>
+      <p>오늘 할 일, 일정 관리 및 중요한 일을 한 눈에 확인하세요.</p>
+    </section>
+
+    <section class="dashboard-summary">
+      <div class="card">
+        <h3>전체 할 일</h3>
+        <p>할 일을 추가하고 관리하세요!</p>
+        <a href="#" onclick="toggleAllTodos()">전체 할 일 관리</a>
+      </div>
+      <div class="card">
+        <h3>오늘의 일정</h3>
+        <p>오늘의 일정은 무엇인가요?</p>
+        <a href="#" onclick="toggleCalendar()">캘린더</a>
+      </div>
+      <div class="card">
+        <h3>중요한 일</h3>
+        <p>지금 중요한 일에 집중해요!</p>
+        <a href="#" onclick="toggleImportantTodos()">중요한 일 보기</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let calendar;
+let calendarVisible = false;
+let selectedDate = null;
+let deleteId = null;
+let deleteMode = null;
+let deleteEventInfo = null;
+let currentVisibleSectionId = null;
+
+
+
+// ---------- 로컬 스토리지 ----------
+function generateId() {
+  return 'id-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+}
+
+function getStoredEvents() {
+  return JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+}
+
+function saveStoredEvents(events) {
+  localStorage.setItem('calendarEvents', JSON.stringify(events));
+}
+
+// ---------- 캘린더 ----------
+function toggleCalendar() {
+  const section = document.getElementById('calendar-section');
+
+  if (currentVisibleSectionId === 'calendar-section') {
+    currentVisibleSectionId = null;
+    section.classList.add('hidden-section');
+    return;
+  }
+
+  showSectionById('calendar-section');
+
+  if (!calendar) {
+    const calendarEl = document.getElementById('calendar');
+    calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'ko',
+      headerToolbar: {
+        left: 'prev,next',
+        center: 'title',
+        right: ''
+      },
+      dateClick(info) {
+        selectedDate = info.dateStr;
+        openDateEventsModal(info.dateStr);
+      },
+      eventClick(info) {
+        selectedDate = info.event.startStr;
+        openDateEventsModal(selectedDate);
+      },
+      events: getStoredEvents().map(e => ({
+        id: e.id,
+        title: e.title,
+        start: e.date,
+        allDay: true,
+        extendedProps: { id: e.id }
+      }))
+    });
+    calendar.render();
+  } else {
+    setTimeout(() => calendar.updateSize(), 0);
+  }
+}
+
+// ---------- 일정 추가 ----------
+document.getElementById('event-form').addEventListener('submit', function (event) {
+  event.preventDefault();
+
+  const title = document.getElementById('event-title').value.trim();
+  const date = document.getElementById('event-date').value;
+  const isImportant = document.getElementById('important-checkbox').checked;
+
+  if (!title || !date) {
+    alert("제목과 날짜를 입력하세요!");
+    return;
+  }
+
+  const id = generateId();
+  const formattedTitle = isImportant ? `⭐ ${title}` : title;
+
+  const newEvent = { id, title: formattedTitle, date, isImportant };
+  const events = getStoredEvents();
+  events.push(newEvent);
+  saveStoredEvents(events);
+
+  if (calendar) {
+    calendar.addEvent({
+      id,
+      title: formattedTitle,
+      start: date,
+      allDay: true,
+      extendedProps: { id }
+    });
+  }
+
+  renderImportantTodos();
+  renderAllTodos();
+  closeModal();
+  event.target.reset();
+  selectedDate = null;
+});
+
+// ---------- 삭제 ----------
+document.getElementById('delete-confirm-btn').addEventListener('click', () => {
+  let events = getStoredEvents();
+
+  if (deleteId) {
+    events = events.filter(e => e.id !== deleteId);
+    saveStoredEvents(events);
+    renderImportantTodos();
+    renderAllTodos();
+    if (calendar) {
+      calendar.getEventById(deleteId)?.remove();
+    }
+  }
+
+  deleteEventInfo = null;
+  deleteId = null;
+  deleteMode = null;
+  document.getElementById('delete-confirmation').style.display = 'none';
+});
+
+document.getElementById('delete-cancel-btn').addEventListener('click', () => {
+  document.getElementById('delete-confirmation').style.display = 'none';
+  deleteId = null;
+});
+
+// ---------- 모달 ----------
+function openModal() {
+  const modal = document.getElementById('event-modal');
+  modal.style.display = 'flex';
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('event-date').value = selectedDate || today;
+}
+
+function closeModal() {
+  document.getElementById('event-modal').style.display = 'none';
+}
+
+function openDeleteConfirmationModal() {
+  document.getElementById('delete-confirmation').style.display = 'flex';
+}
+
+// ---------- 전체 할 일 ----------
+function toggleAllTodos() {
+  if (currentVisibleSectionId === 'all-todo-section') {
+    currentVisibleSectionId = null;
+    document.getElementById('all-todo-section').classList.add('hidden-section');
+    return;
+  }
+
+  showSectionById('all-todo-section');
+  renderAllTodos();
+}
+
+
+function renderAllTodos() {
+  const list = document.getElementById('all-todo-list');
+  list.innerHTML = '';
+  const events = getStoredEvents().sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  if (!events.length) {
+    const li = document.createElement('li');
+    li.textContent = '등록된 일정이 없습니다.';
+    list.appendChild(li);
+    return;
+  }
+
+  events.forEach(event => {
+    const li = document.createElement('li');
+    li.textContent = `${event.title} (${event.date})`;
+    li.style.display = 'flex';
+    li.style.justifyContent = 'space-between';
+    li.style.alignItems = 'center';
+
+    const btn = document.createElement('button');
+    btn.textContent = '삭제';
+    btn.style.backgroundColor = '#FF6F61';
+    btn.style.color = 'white';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '999px';
+    btn.style.padding = '6px 14px';
+    btn.style.cursor = 'pointer';
+    btn.onclick = () => {
+      deleteId = event.id;
+      openDeleteConfirmationModal();
+    };
+
+    li.appendChild(btn);
+    list.appendChild(li);
+
+  });
+  if (calendar) {
+    setTimeout(() => calendar.updateSize(), 0);
+    }
+}
+
+// ---------- 중요한 일 ----------
+function toggleImportantTodos() {
+  if (currentVisibleSectionId === 'important-section') {
+    currentVisibleSectionId = null;
+    document.getElementById('important-section').classList.add('hidden-section');
+    return;
+  }
+
+  showSectionById('important-section');
+  renderImportantTodos();
+}
+
+function renderImportantTodos() {
+  const list = document.getElementById('important-list');
+  list.innerHTML = '';
+  const events = getStoredEvents().filter(e => e.isImportant);
+
+  if (!events.length) {
+    const li = document.createElement('li');
+    li.textContent = '중요한 일정이 없습니다.';
+    list.appendChild(li);
+    return;
+  }
+
+  events.forEach(event => {
+    const li = document.createElement('li');
+    li.textContent = `${event.title} (${event.date})`;
+    li.style.display = 'flex';
+    li.style.justifyContent = 'space-between';
+    li.style.alignItems = 'center';
+
+    const btn = document.createElement('button');
+    btn.textContent = '삭제';
+    btn.style.backgroundColor = '#FF6F61';
+    btn.style.color = 'white';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '999px';
+    btn.style.padding = '6px 14px';
+    btn.style.cursor = 'pointer';
+    btn.onclick = () => {
+      deleteId = event.id;
+      openDeleteConfirmationModal();
+    };
+
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+
+  if (calendar) {
+  setTimeout(() => calendar.updateSize(), 0);
+    }
+
+}
+
+// ---------- 날짜 모달 ----------
+function openDateEventsModal(dateStr) {
+  selectedDate = dateStr;
+  const modal = document.getElementById('date-events-modal');
+  const list = document.getElementById('date-events-list');
+  const title = document.getElementById('modal-date-title');
+
+  list.innerHTML = '';
+  title.textContent = `${dateStr}의 일정`;
+  modal.style.display = 'flex';
+
+  const events = getStoredEvents().filter(e => e.date === dateStr);
+  if (!events.length) {
+    const li = document.createElement('li');
+    li.textContent = '이 날짜에는 일정이 없습니다.';
+    list.appendChild(li);
+    return;
+  }
+
+  events.forEach(event => {
+    const li = document.createElement('li');
+    li.textContent = event.title;
+    li.style.cursor = 'pointer';
+    li.onclick = () => {
+      deleteId = event.id;
+      openDeleteConfirmationModal();
+    };
+    list.appendChild(li);
+  });
+}
+
+function closeDateEventsModal() {
+  document.getElementById('date-events-modal').style.display = 'none';
+}
+
+document.getElementById('add-event-btn').addEventListener('click', () => {
+  closeDateEventsModal();
+  openModal();
+});
+
+// ---------- 전체 삭제 ----------
+function clearLocalStorage() {
+  localStorage.removeItem('calendarEvents');
+  if (calendar) {
+    calendar.removeAllEvents();
+     setTimeout(() => calendar.updateSize(), 0);
+  }
+  renderAllTodos();
+  renderImportantTodos();
+}
+
+// 초기 로딩
+document.addEventListener('DOMContentLoaded', () => {
+  renderAllTodos();
+  renderImportantTodos();
+});
+// 👇 캘린더 섹션 표시/숨김을 안전하게 처리하는 유틸 함수
+function showSection(section) {
+  section.style.visibility = 'visible';
+  section.style.height = 'auto';
+  section.style.opacity = '1';
+  section.style.position = 'relative';
+}
+
+function hideSection(section) {
+  section.style.visibility = 'hidden';
+  section.style.height = '0';
+  section.style.opacity = '0';
+  section.style.position = 'absolute';
+}
+function showSectionById(sectionId) {
+  if (currentVisibleSectionId === sectionId) return; // ✅ 이미 보이는 섹션이면 무시
+
+  const sections = [
+    'calendar-section',
+    'all-todo-section',
+    'important-section'
+  ];
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('visible-section');
+    el.classList.add('hidden-section');
+  });
+
+  const target = document.getElementById(sectionId);
+  target.classList.remove('hidden-section');
+  target.classList.add('visible-section');
+
+  currentVisibleSectionId = sectionId; // ✅ 현재 섹션 추적
+
+  if (sectionId === 'calendar-section' && calendar) {
+    setTimeout(() => calendar.updateSize(), 0);
+  }
+}
+
+  </script>
+</body>
+</html>
